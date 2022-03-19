@@ -1,0 +1,36 @@
+async function dpCreate() {
+
+if (!(await existsStateAsync("0_userdata.0.Alarm-MaterialDesign.DeliveryPostitReminder"))) {
+        await createStateAsync("0_userdata.0.Alarm-MaterialDesign.DeliveryPostitReminder",'[{"id":"PostReminderArray","deleter":""}]',{type: "string", name: "DeliveryPostitReminder", role: "value", read: true, write: true, } ); }
+}
+
+dpCreate();
+
+on({id: "parcel.0.inDelivery", change: "any"}, async function (obj) {
+  var value = obj.state.val;
+  var oldValue = obj.oldState.val;
+
+
+let myOldDeliveryJSON=JSON.parse(getState('0_userdata.0.Alarm-MaterialDesign.DeliveryPostitReminder').val)
+ //log(JSON.stringify(myOldDeliveryJSON))
+let deliveryJSON=JSON.parse(getState('parcel.0.inDelivery').val)
+
+let isAlready=false;
+   if (deliveryJSON.length>0){
+    for(let i=0;i<deliveryJSON.length;i++){
+         isAlready=false;
+         for (let ii=0;ii<myOldDeliveryJSON.length;ii++){
+             if (myOldDeliveryJSON[ii].id==deliveryJSON[i].id) isAlready=true;
+         }
+    
+         if(!isAlready) { myOldDeliveryJSON.push({"id":deliveryJSON[i].id,"deleter":deliveryJSON[i].source+' Paket kommt heute von '+deliveryJSON[i].name}) ;
+         //log('ii');
+         
+         await wait(5000);
+         setState('0_userdata.0.Alarm-MaterialDesign.PostItErstellen',deliveryJSON[i].source+" Paket kommt heute von "+deliveryJSON[i].name)
+         } else{  }
+   }
+}
+  
+ deliveryJSON.length==0 ? setState('0_userdata.0.Alarm-MaterialDesign.DeliveryPostitReminder', '[{"id":"PostReminderArray","deleter":""}]') :setState('0_userdata.0.Alarm-MaterialDesign.DeliveryPostitReminder', JSON.stringify(myOldDeliveryJSON));
+});
