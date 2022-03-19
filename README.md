@@ -1,6 +1,6 @@
 # PostIt-fuer-VIS-und-Telegram
 
-AKTUELLE FiLE IST DAS MiT MORE BOTS IM NAMEN !!!!
+AKTUELLES FiLE IST DAS MiT MORE BOTS IM NAMEN !!!!
 
 forum: https://forum.iobroker.net/post/766336
 
